@@ -1,6 +1,8 @@
 package xerrors
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"runtime"
@@ -8,6 +10,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 func TestError(t *testing.T) {
@@ -45,4 +49,31 @@ func TestWithMessage(t *testing.T) {
 
 	e = WithMessagef(errors.New("raw"), "can not open %s file", "config")
 	assert.EqualError(t, e, "can not open config file: raw")
+}
+
+func TestMarshalLogArray(t *testing.T) {
+	buf := new(bytes.Buffer)
+	encoderCfg := zapcore.EncoderConfig{
+		MessageKey:     "msg",
+		LevelKey:       "level",
+		NameKey:        "logger",
+		EncodeLevel:    zapcore.LowercaseLevelEncoder,
+		EncodeTime:     zapcore.ISO8601TimeEncoder,
+		EncodeDuration: zapcore.StringDurationEncoder,
+	}
+	core := zapcore.NewCore(zapcore.NewConsoleEncoder(encoderCfg), zapcore.AddSync(buf), zapcore.DebugLevel)
+	logger := zap.New(core)
+
+	e := New("new error")
+	logger.Info(t.Name(), zap.Array("stacktrace", e.(*Error).stackTrace))
+
+	s := bytes.Split(buf.Bytes(), []byte("\t"))
+	assert.Len(t, s, 3)
+	data := make(map[string]any)
+	err := json.Unmarshal(s[2], &data)
+	require.NoError(t, err)
+	assert.Contains(t, data, "stacktrace")
+	stacktrace, ok := data["stacktrace"].([]interface{})
+	require.True(t, ok)
+	assert.Contains(t, stacktrace[0], t.Name())
 }
