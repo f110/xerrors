@@ -77,3 +77,9 @@ func TestMarshalLogArray(t *testing.T) {
 	require.True(t, ok)
 	assert.Contains(t, stacktrace[0], t.Name())
 }
+
+func TestIs(t *testing.T) {
+	original := New("foo")
+	wrap := WithMessage(original, "bar")
+	assert.ErrorIs(t, wrap, original)
+}
