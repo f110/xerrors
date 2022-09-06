@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"reflect"
 	"runtime"
 	"testing"
 
@@ -82,4 +83,6 @@ func TestIs(t *testing.T) {
 	original := New("foo")
 	wrap := WithMessage(original, "bar")
 	assert.ErrorIs(t, wrap, original)
+
+	assert.True(t, reflect.TypeOf(&Error{}).Comparable(), "Error must be comparable. If the change would make no longer comparable, Is function needs to be implemented.")
 }
