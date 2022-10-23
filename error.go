@@ -46,9 +46,14 @@ func (e *Error) Format(s fmt.State, verb rune) {
 		}
 		if s.Flag('+') {
 			io.WriteString(s, "\n")
-			io.WriteString(s, e.stackTrace.String())
+			io.WriteString(s, e.StackTrace().String())
 		}
 	}
+}
+
+// StackTrace returns Frames that is most deeply frames in the error chain.
+func (e *Error) StackTrace() Frames {
+	return StackTrace(e)
 }
 
 func New(msg string) error {
