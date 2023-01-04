@@ -18,6 +18,8 @@ import (
 func TestError(t *testing.T) {
 	e := New("new error")
 	require.NotNil(t, e)
+	assert.Nil(t, StackTrace(e), "The created error should not contain the stacktrace")
+	assert.Nil(t, StackTrace(Newf("new error")), "The created error by Newf should not contain the stacktrace")
 	_, ok := e.(interface {
 		Unwrap() error
 	})
