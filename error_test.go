@@ -44,6 +44,9 @@ func TestStackTrace(t *testing.T) {
 	frames := StackTrace(e)
 	_, filename, _, _ := runtime.Caller(1)
 	assert.Contains(t, frames.String(), filename)
+
+	wrapped := fmt.Errorf(": %w", e)
+	assert.NotNil(t, StackTrace(wrapped))
 }
 
 func TestWithMessage(t *testing.T) {

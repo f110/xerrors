@@ -86,9 +86,11 @@ type Frames []uintptr
 var _ zapcore.ArrayMarshaler = Frames{}
 
 func StackTrace(err error) Frames {
-	if _, ok := err.(*Error); !ok {
+	var sErr *Error
+	if !errors.As(err, &sErr) {
 		return nil
 	}
+	err = sErr
 
 	var frames Frames
 	for {
