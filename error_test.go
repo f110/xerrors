@@ -70,7 +70,7 @@ func TestMarshalLogArray(t *testing.T) {
 	core := zapcore.NewCore(zapcore.NewConsoleEncoder(encoderCfg), zapcore.AddSync(buf), zapcore.DebugLevel)
 	logger := zap.New(core)
 
-	e := New("new error")
+	e := WithStack(New("new error"))
 	logger.Info(t.Name(), zap.Array("stacktrace", e.(*Error).stackTrace))
 
 	s := bytes.Split(buf.Bytes(), []byte("\t"))
