@@ -79,7 +79,7 @@ func TestMarshalLogArray(t *testing.T) {
 	err := json.Unmarshal(s[2], &data)
 	require.NoError(t, err)
 	assert.Contains(t, data, "stacktrace")
-	stacktrace, ok := data["stacktrace"].([]interface{})
+	stacktrace, ok := data["stacktrace"].([]any)
 	require.True(t, ok)
 	assert.Contains(t, stacktrace[0], t.Name())
 }

@@ -70,15 +70,26 @@ func WithStack(err error) error {
 	if err == nil {
 		return nil
 	}
-	return &Error{err: err, stackTrace: caller()}
+	if StackTrace(err) == nil {
+		return &Error{err: err, stackTrace: caller()}
+	}
+	return err
 }
 
 func WithMessage(err error, msg string) error {
-	return &Error{msg: msg, err: err, stackTrace: caller()}
+	var st []uintptr
+	if StackTrace(err) == nil {
+		st = caller()
+	}
+	return &Error{msg: msg, err: err, stackTrace: st}
 }
 
 func WithMessagef(err error, format string, a ...any) error {
-	return &Error{msg: fmt.Sprintf(format, a...), err: err, stackTrace: caller()}
+	var st []uintptr
+	if StackTrace(err) == nil {
+		st = caller()
+	}
+	return &Error{msg: fmt.Sprintf(format, a...), err: err, stackTrace: st}
 }
 
 type Frames []uintptr
