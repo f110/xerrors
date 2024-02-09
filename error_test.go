@@ -34,6 +34,14 @@ func TestError(t *testing.T) {
 	})
 	assert.NotNil(t, v.Unwrap())
 	assert.EqualError(t, v.Unwrap(), "root cause")
+
+	e = NewWithStack("new error")
+	require.NotNil(t, e)
+	assert.Greater(t, len(StackTrace(e)), 0)
+
+	e = NewfWithStack("%d error", 1)
+	require.NotNil(t, e)
+	assert.Greater(t, len(StackTrace(e)), 0)
 }
 
 func TestStackTrace(t *testing.T) {
