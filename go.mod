@@ -3,7 +3,7 @@ module go.f110.dev/xerrors
 go 1.22.0
 
 require (
-	github.com/stretchr/testify v1.7.2
+	github.com/stretchr/testify v1.8.4
 	go.uber.org/zap v1.21.0
 )
 
