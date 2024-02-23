@@ -55,6 +55,9 @@ func TestStackTrace(t *testing.T) {
 
 	wrapped := fmt.Errorf(": %w", e)
 	assert.NotNil(t, StackTrace(wrapped))
+
+	e = WithStack(e)
+	assert.Equal(t, frames, StackTrace(e))
 }
 
 func TestWithMessage(t *testing.T) {
