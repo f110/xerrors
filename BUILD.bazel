@@ -1,0 +1,26 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+load("@gazelle//:def.bzl", "gazelle")
+
+# gazelle:prefix go.f110.dev/xerrors
+
+gazelle(name = "gazelle")
+
+go_library(
+    name = "xerrors",
+    srcs = ["error.go"],
+    importpath = "go.f110.dev/xerrors",
+    visibility = ["//visibility:public"],
+    deps = ["//vendor/go.uber.org/zap/zapcore"],
+)
+
+go_test(
+    name = "xerrors_test",
+    srcs = ["error_test.go"],
+    embed = [":xerrors"],
+    deps = [
+        "//vendor/github.com/stretchr/testify/assert",
+        "//vendor/github.com/stretchr/testify/require",
+        "//vendor/go.uber.org/zap",
+        "//vendor/go.uber.org/zap/zapcore",
+    ],
+)
