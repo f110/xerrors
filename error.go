@@ -64,6 +64,14 @@ func Newf(format string, a ...any) error {
 	return &Error{msg: fmt.Sprintf(format, a...)}
 }
 
+func NewWithStack(msg string) error {
+	return &Error{msg: msg, stackTrace: caller()}
+}
+
+func NewfWithStack(format string, a ...any) error {
+	return &Error{msg: fmt.Sprintf(format, a...), stackTrace: caller()}
+}
+
 // WithStack annotates err with a stack trace.
 // If err is nil, WithStack returns nil.
 func WithStack(err error) error {
