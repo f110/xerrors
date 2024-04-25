@@ -42,6 +42,11 @@ func TestError(t *testing.T) {
 	e = NewfWithStack("%d error", 1)
 	require.NotNil(t, e)
 	assert.Greater(t, len(StackTrace(e)), 0)
+
+	fooErr := Define("foo error")
+	newErr := fooErr.WithStack()
+	assert.Greater(t, len(StackTrace(newErr)), 0)
+	assert.Nil(t, StackTrace(fooErr))
 }
 
 func TestStackTrace(t *testing.T) {
