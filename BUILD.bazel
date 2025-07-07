@@ -10,7 +10,10 @@ go_library(
     srcs = ["error.go"],
     importpath = "go.f110.dev/xerrors",
     visibility = ["//visibility:public"],
-    deps = ["@org_uber_go_zap//zapcore"],
+    deps = [
+        "@org_uber_go_zap//:zap",
+        "@org_uber_go_zap//zapcore",
+    ],
 )
 
 go_test(
