@@ -1,6 +1,6 @@
 jobs: test_all: {
 	command: "test"
-	all_reivision: true
+	all_revision: true
 	github_status: true
 	targets: ["//..."]
 	platforms: ["@rules_go//go/toolchain:linux_amd64"]
