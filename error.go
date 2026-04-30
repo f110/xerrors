@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
+	"reflect"
 	"runtime"
 	"strings"
 
@@ -16,6 +18,8 @@ type Error struct {
 	msg        string
 	stackTrace Frames
 }
+
+var _ slog.LogValuer = (*Error)(nil)
 
 func (e *Error) Error() string {
 	b := new(strings.Builder)
@@ -59,6 +63,26 @@ func (e *Error) WithStack() error {
 // StackTrace returns Frames that is most deeply frames in the error chain.
 func (e *Error) StackTrace() Frames {
 	return StackTrace(e)
+}
+
+func (e *Error) LogValue() slog.Value {
+	st := e.StackTrace()
+	if st != nil {
+		var kind string
+		if e.err != nil {
+			kind = reflect.TypeOf(e.err).String()
+		} else {
+			kind = reflect.TypeOf(e).String()
+		}
+
+		return slog.GroupValue(
+			slog.String("stack", st.String()),
+			slog.String("message", e.Error()),
+			slog.String("kind", kind),
+		)
+	}
+
+	return slog.StringValue(e.Error())
 }
 
 // Define returns an error.
